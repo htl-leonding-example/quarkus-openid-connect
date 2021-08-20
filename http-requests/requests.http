@@ -1,0 +1,49 @@
+### user-endpoint w/o token
+
+GET http://localhost:8080/api/users
+
+
+### get token
+
+# curl -X POST http://localhost8180/auth/realms/quarkus/protocol/openid-connect/token
+# -H 'Content-Type: application/x-www-form-urlencoded'
+# -d 'client_id=my-backend-service&username=user&password=passme&grant_type=password'
+
+POST http://localhost:8180/auth/realms/quarkus/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_secret=ed8509f0-eafa-4561-bbce-99c1a40a0d31&client_id=my-quarkus-service&username=john&password=passme&grant_type=password
+
+> {% client.global.set("access_token", response.body.access_token); %}
+
+
+### use token for authentification for user-resource
+
+GET localhost:8080/api/users
+Authorization: Bearer {{access_token}}
+
+### Verwendung der Variablen und Zugriff auf admin - Resource als user --> 403 Forbidden
+
+GET localhost:8080/api/users/admin
+Authorization: Bearer {{access_token}}
+
+
+
+
+
+### test the admin account - get token from keycloak  and store in variable
+
+POST http://localhost:8180/auth/realms/quarkus/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_secret=ed8509f0-eafa-4561-bbce-99c1a40a0d31&client_id=my-quarkus-service&username=admin&password=passme&grant_type=password
+
+> {% client.global.set("access_token", response.body.access_token); %}
+
+### Verwendung der Variablen und Zugriff auf admin - Resource als admin
+
+GET localhost:8080/api/users/admin
+Authorization: Bearer {{access_token}}
+
+
+
